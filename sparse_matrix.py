@@ -6,6 +6,20 @@ from scipy.sparse import csr_matrix, csc_matrix
 
 class SparseMatrix:
     """class with the sparse matrix functions"""
+    def __init__(self, matrixFilePath=None, numRows=None, numCols=None):
+        self.matrix = {}
+        self.numRows = numRows
+        self.numCols = numCols
+        if matrixFilePath:
+            self.read_from_file(matrixFilePath)
+
+    def setElement(self, row, col, value):
+        """setting unique elements in the matrix"""
+        if value != 0:
+            self.matrix[row, col] = value
+        elif (row, col) in self.matrix:
+            del self.matrix[row, col]
+
     def readfromfile(self, matrixFilePath):
         """function to set conditions for the data to be extracted from the files."""
         try:
@@ -21,8 +35,14 @@ class SparseMatrix:
                     continue
                 if not (line.startswith("(") and line.endswith(")")):
                     raise ValueError("the line is not the correct format.")
-                line = line[1:-1]
-                
+                stripped_line = line[1:-1]
+                row, col, value = map(int, stripped_line.split(","))
+                self.setElement(row, col, val)
+        except ValueError:
+            pass
+
+
+
 
 
         
